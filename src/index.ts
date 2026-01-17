@@ -1,6 +1,10 @@
 // src/index.ts
 import http from "http";
-const PORT = process.env.PORT || 8080;
+import dotenv from "dotenv";
+dotenv.config();
+
+// 1. START THE SERVER ONLY ONCE
+const PORT = process.env.PORT || 10000;
 http
   .createServer((req, res) => {
     res.writeHead(200);
@@ -10,23 +14,21 @@ http
     console.log(`🚀 Keep-alive server listening on port ${PORT}`);
   });
 
-// 2. LOG EVERYTHING
-console.log("Checking environment variables...");
-console.log("BOT_TOKEN exists:", !!process.env.BOT_TOKEN);
-console.log("MONGODB_URI exists:", !!process.env.MONGODB_URI);
 import { connectDB } from "./store/db";
 import { syncRegistry } from "./store/users";
 import { bot } from "./bot";
 
-// Import handlers
+// 2. IMPORT ALL HANDLERS (This makes your buttons work!)
 import "./commands/start";
 import "./commands/vibes";
-import "./handlers/message";
 import "./commands/add";
+import "./handlers/message";
 
 async function startApp() {
   try {
+    console.log("Checking environment variables...");
     console.log("Connecting to MongoDB...");
+
     await connectDB();
     console.log("📦 MongoDB Connected!");
 
