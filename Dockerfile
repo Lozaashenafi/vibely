@@ -1,8 +1,9 @@
-# Change from node:18 to node:20
 FROM node:20
 
-# The rest of the file stays the same...
-RUN apt-get update && apt-get install -y python3 python3-pip ffmpeg curl
+# Install ffmpeg and python
+RUN apt-get update && apt-get install -y ffmpeg python3 python3-pip curl
+
+# Install the LATEST yt-dlp directly from GitHub
 RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
 RUN chmod a+rx /usr/local/bin/yt-dlp
 
@@ -11,5 +12,8 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npm run build
+
+# Ensure cookies.txt is treated correctly
+RUN touch cookies.txt
 
 CMD ["npm", "start"]
