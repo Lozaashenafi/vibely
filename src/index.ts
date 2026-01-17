@@ -1,13 +1,10 @@
-import dotenv from "dotenv";
-dotenv.config();
-
+// src/index.ts
+import "./bot";
 import { connectDB } from "./store/db";
 import { syncRegistry } from "./store/users";
 
-// Import your commands
+// Import handlers
 import "./commands/start";
-import "./commands/help";
-import "./commands/add";
 import "./commands/vibes";
 import "./handlers/message";
 
@@ -16,13 +13,12 @@ async function startApp() {
     // 1. Connect to MongoDB Atlas
     await connectDB();
 
-    // 2. Load all shared vibes into memory for the share links
+    // 2. Load shared vibes
     await syncRegistry();
 
-    console.log("🎶 Vibely bot is online and database is connected!");
+    console.log("🎶 Vibely bot is online!");
   } catch (error) {
-    console.error("💥 Failed to start app:", error);
-    process.exit(1);
+    console.error("💥 Startup Error:", error);
   }
 }
 
