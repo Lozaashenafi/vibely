@@ -22,6 +22,7 @@ import { bot } from "./bot";
 import "./commands/start";
 import "./commands/vibes";
 import "./handlers/message";
+import "./commands/add";
 
 async function startApp() {
   try {
