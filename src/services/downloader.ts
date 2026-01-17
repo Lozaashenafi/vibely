@@ -4,36 +4,59 @@ import fs from "fs";
 import { promisify } from "util";
 
 const execPromise = promisify(exec);
-// const YTDLP_PATH =
-//   "C:\\Users\\loza\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\yt-dlp.exe";
+
 const YTDLP_PATH = "yt-dlp";
+
 export async function downloadAudio(
   url: string,
-): Promise<{ filePath: string; title: string }> {
+): Promise<{ filePath: string; title: string; thumbPath?: string }> {
+  // Use a predictable path for downloads
   const downloadsDir = path.resolve("downloads");
-  if (!fs.existsSync(downloadsDir)) fs.mkdirSync(downloadsDir);
+  if (!fs.existsSync(downloadsDir)) {
+    fs.mkdirSync(downloadsDir, { recursive: true });
+  }
 
-  // We ask yt-dlp to print the Title AND the Filepath separated by a pipe |
-  const command = `"${YTDLP_PATH}" -x --audio-format mp3 --no-playlist --format "bestaudio/best" --print "title" --print "after_move:filepath" -o "${downloadsDir}/%(id)s.%(ext)s" "${url}"`;
+  const command = `${YTDLP_PATH} -x --audio-format mp3 --no-playlist --no-warnings --write-thumbnail --convert-thumbnails jpg --print "title" --print "after_move:filepath" -o "${downloadsDir}/%(id)s.%(ext)s" "${url}"`;
 
   try {
-    console.log("🚀 Downloading:", url);
-    const { stdout } = await execPromise(command, { timeout: 120000 });
+    console.log("🚀 Starting download process for:", url);
 
-    // Split the output into Title and Path
-    const output = stdout.trim().split("\n");
-    const title = output[0];
-    const filePath = output[1];
+    // Increase timeout to 3 minutes for slower Render instances
+    const { stdout, stderr } = await execPromise(command, { timeout: 180000 });
 
-    if (!filePath || !fs.existsSync(filePath)) {
-      throw new Error("File not found.");
+    if (stderr) {
+      console.log("⚠️ YT-DLP Stderr (can be ignored if success):", stderr);
     }
 
-    return { filePath, title };
+    const lines = stdout
+      .trim()
+      .split("\n")
+      .filter((line) => line.trim() !== "");
+    const filePath = lines[lines.length - 1]?.trim();
+    const title = lines[lines.length - 2]?.trim() || "Unknown Title";
+
+    if (!filePath || !fs.existsSync(filePath)) {
+      console.error("❌ File Verification Failed. Path:", filePath);
+      throw new Error("Audio file was not created.");
+    }
+
+    // Look for the thumbnail (it has the same name but .jpg)
+    const thumbPath = filePath.replace(".mp3", ".jpg");
+
+    console.log("✅ Download successful:", title);
+    return {
+      filePath,
+      title,
+      thumbPath: fs.existsSync(thumbPath) ? thumbPath : undefined,
+    };
   } catch (error: any) {
-    console.error("Download Error:", error.message);
-    throw new Error(
-      "I can't access this link. It might be private or restricted.",
-    );
+    console.error("❌ YT-DLP EXECUTION ERROR:", error.message);
+
+    // Check if it's a known restricted video
+    if (error.message.includes("Sign in to confirm")) {
+      throw new Error("This video is age-restricted or requires login.");
+    }
+
+    throw new Error(`Download failed: ${error.message}`);
   }
 }
