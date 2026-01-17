@@ -4,11 +4,11 @@ import fs from "fs";
 import { promisify } from "util";
 
 const execPromise = promisify(exec);
-const YTDLP_PATH =
-  "C:\\Users\\loza\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\yt-dlp.exe";
-
+// const YTDLP_PATH =
+//   "C:\\Users\\loza\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\yt-dlp.exe";
+const YTDLP_PATH = "yt-dlp";
 export async function downloadAudio(
-  url: string
+  url: string,
 ): Promise<{ filePath: string; title: string }> {
   const downloadsDir = path.resolve("downloads");
   if (!fs.existsSync(downloadsDir)) fs.mkdirSync(downloadsDir);
@@ -33,7 +33,7 @@ export async function downloadAudio(
   } catch (error: any) {
     console.error("Download Error:", error.message);
     throw new Error(
-      "I can't access this link. It might be private or restricted."
+      "I can't access this link. It might be private or restricted.",
     );
   }
 }

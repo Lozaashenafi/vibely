@@ -1,0 +1,56 @@
+{
+  "1796976592": {
+    "vibes": {
+      "Jazz": {
+        "id": "f233c84e-318c-4c8c-864d-26bf14f6e0c0",
+        "name": "Jazz",
+        "songs": []
+      },
+      "Reggae": {
+        "id": "16532bfb-c29f-4bca-8509-8eb7c9fc0ee9",
+        "name": "Reggae",
+        "songs": []
+      },
+      "Afrobeats": {
+        "id": "1be20d49-dd31-494e-a2de-2b8e6d7e1479",
+        "name": "Afrobeats",
+        "songs": []
+      },
+      "Chill": {
+        "id": "3cc6b9bf-827e-4f66-8e1e-7bc2daafbc90",
+        "name": "Chill",
+        "songs": [
+          {
+            "url": "https://youtu.be/5W5Z9sFPO-E?list=RD5W5Z9sFPO-E",
+            "title": "Endete Argoshale",
+            "addedAt": "2026-01-17T07:30:57.021Z",
+            "telegramFileId": "CQACAgQAAxkDAAO-aWs6skOVlfbEHmqMf14ZYmfwRSAAAnUgAAIakFlT4lrrYr5Zl_o4BA"
+          }
+        ]
+      },
+      "Late Night": {
+        "id": "69fcfb0f-9adf-45c1-b4f4-6288ae80f4bf",
+        "name": "Late Night",
+        "songs": []
+      },
+      "Energy": {
+        "id": "83107245-12c1-48cd-847c-9f0aa347fa72",
+        "name": "Energy",
+        "songs": []
+      },
+      "Chill (Imported)": {
+        "id": "d39ccf87-8a82-4429-9e15-b1eeb2741f51",
+        "name": "Chill (Imported)",
+        "songs": [
+          {
+            "url": "https://youtu.be/5W5Z9sFPO-E?list=RD5W5Z9sFPO-E",
+            "title": "Endete Argoshale",
+            "addedAt": "2026-01-17T07:30:57.021Z",
+            "telegramFileId": "CQACAgQAAxkDAAO-aWs6skOVlfbEHmqMf14ZYmfwRSAAAnUgAAIakFlT4lrrYr5Zl_o4BA"
+          }
+        ]
+      }
+    },
+    "pendingLink": "https://youtu.be/5W5Z9sFPO-E?list=RD5W5Z9sFPO-E"
+  }
+}
