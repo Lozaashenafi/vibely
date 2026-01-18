@@ -1,9 +1,9 @@
 FROM node:20
 
-# Install ffmpeg and python
+# Install ffmpeg
 RUN apt-get update && apt-get install -y ffmpeg python3 python3-pip curl
 
-# Install the LATEST yt-dlp directly from GitHub
+# ALWAYS get the absolute latest yt-dlp binary
 RUN curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
 RUN chmod a+rx /usr/local/bin/yt-dlp
 
@@ -13,7 +13,7 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Ensure cookies.txt is treated correctly
+# Make sure an empty cookies file exists if one wasn't pushed
 RUN touch cookies.txt
 
 CMD ["npm", "start"]
