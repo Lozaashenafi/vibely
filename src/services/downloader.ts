@@ -18,19 +18,22 @@ export async function downloadAudio(
     ? `--cookies "${cookiesPath}"`
     : "";
 
-  // NEW BYPASS STRATEGY:
-  // 1. Force the 'ios' client only (most stable bypass currently)
-  // 2. Add 'impersonate' headers to look like a real Apple device
+  // NEWEST BYPASS STRATEGY (Jan 2024):
+  // 1. Pretend to be a Mobile Browser (mweb)
+  // 2. Force IPv4 (Crucial for Render/Google Cloud IPs)
+  // 3. Add a real Referer header
   const command = `${YTDLP_PATH} ${cookiesArg} \
     --force-ipv4 \
-    --extractor-args "youtube:player_client=ios;player_skip=webpage,configs" \
+    --user-agent "Mozilla/5.0 (iPhone; CPU iPhone OS 16_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5 Mobile/15E148 Safari/604.1" \
+    --referer "https://www.youtube.com/" \
+    --extractor-args "youtube:player_client=mweb,android;player_skip=webpage,configs" \
     -x --audio-format mp3 --no-playlist --no-warnings \
     --write-thumbnail --convert-thumbnails jpg \
     --print "title" --print "after_move:filepath" \
     -o "${downloadsDir}/%(id)s.%(ext)s" "${url}"`;
 
   try {
-    console.log("🚀 Attempting iOS Client Bypass for:", url);
+    console.log("🚀 Attempting Mobile-Web Bypass for:", url);
     const { stdout } = await execPromise(command, { timeout: 180000 });
 
     const lines = stdout
@@ -50,9 +53,14 @@ export async function downloadAudio(
       thumbPath: fs.existsSync(thumbPath) ? thumbPath : undefined,
     };
   } catch (error: any) {
-    console.error("❌ YT-DLP ERROR:", error.message);
-    throw new Error(
-      "YouTube blocked the server. Try a different video or wait a few minutes.",
-    );
+    console.error("❌ YT-DLP CRITICAL FAILURE:", error.message);
+
+    // Check if the video is actually a 'Music' video (YouTube blocks these harder)
+    if (error.message.includes("confirm you’re not a bot")) {
+      throw new Error(
+        "YouTube detected the Render Server. Try a different video or update cookies.txt.",
+      );
+    }
+    throw new Error(`YouTube Error: ${error.message.split("\n")[0]}`);
   }
 }
