@@ -1,22 +1,18 @@
 import { bot } from "../bot";
 import { getUser, saveUser, sharedVibes } from "../store/users";
 
-// 1. Listen for the command - Made the function ASYNC
 bot.onText(/\/vibes|🌊 My Vibes/, async (msg) => {
   const chatId = msg.chat.id;
 
   // Added AWAIT
   const user = await getUser(chatId);
 
-  // Mongoose Maps work differently than regular objects.
-  // We check if it's a Map and get the names accordingly.
   const vibeNames =
     user.vibes instanceof Map
       ? Array.from(user.vibes.keys())
       : Object.keys(user.vibes);
 
   const buttons = vibeNames.map((name) => {
-    // Get the vibe object based on whether it's a Map or Object
     const vibe =
       user.vibes instanceof Map ? user.vibes.get(name) : user.vibes[name];
     return [
